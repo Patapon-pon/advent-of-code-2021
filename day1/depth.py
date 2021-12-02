@@ -1,25 +1,17 @@
 with open("input.txt", "r") as f:
-    data = [int(line.strip("\n")) for line in f]
-
-# part 1 solution
-# previous = data[0]
-# increase_count = 0
-#
-# for measurement in data[1:]:
-#     if measurement > previous:
-#         increase_count += 1
-#     previous = measurement
-#
-# print(increase_count)
+    data: list = [int(line.strip("\n")) for line in f]
 
 
-# part 2 solution
-previous = sum(data[:3])
-increase_count = 0
-for i in range(len(data[1:len(data)-1])):
-    increase_thrice = sum(data[i:i+3])
-    if increase_thrice > previous:
-        increase_count += 1
-    previous = increase_thrice
+def depth_counter(steps: int) -> int:
+    previous = sum(data[:steps])
+    depth_increase_counter = 0
+    for i in range(len(data[1:len(data)])):
+        depth_increase_by_steps = sum(data[i:i+steps])
+        if depth_increase_by_steps > previous:
+            depth_increase_counter += 1
+        previous = depth_increase_by_steps
+    return depth_increase_counter
 
-print(increase_count)
+
+print(depth_counter(1))     # PART 1
+print(depth_counter(3))     # PART 2
