@@ -57,16 +57,29 @@ public class Submarine {
     public Submarine() {
         positionalData.put("horizontal", 0);
         positionalData.put("depth", 0);
+        positionalData.put("aim", 0);
     }
 
 
     public int dive(List<String> data) {
         for (String instruction: data) {
             Direction order = InstructionParser.parse(instruction);
-            positionalData.put(order.getDirection(), positionalData.get(order.getDirection()) + order.getSteps());
+            updatePosition(order);
 
         }
         return calculateCross();
+    }
+
+    private void updatePosition(Direction order) {
+        String key = order.getDirection();
+        if (key.equals("depth")) {
+            positionalData.put("aim", positionalData.get("aim") + order.getSteps());
+        } else {
+            positionalData.put(key, positionalData.get(key) + order.getSteps());
+            int currentDepth = positionalData.get("depth");
+            int newDepth = currentDepth + (order.getSteps() * positionalData.get("aim"));
+            positionalData.put("depth", newDepth);
+        }
     }
 
     private int calculateCross() {
