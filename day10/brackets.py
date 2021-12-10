@@ -45,7 +45,7 @@ def find_missing_brackets(line):
             raise MissingBracketException(f"{bracket} was found instead of {open_to_close_brackets[current]}", bracket)
     else:
         stack.append(current)
-    return ["".join(stack)]
+    return stack
 
 
 def part1():
