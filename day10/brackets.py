@@ -2,6 +2,14 @@ with open("input.txt") as f:
     syntax_lines = [line.strip("\n") for line in f]
 
 
+class MissingBracketException(Exception):
+    error: str
+
+    def __init__(self, reason, error_sign):
+        super().__init__(reason)
+        self.error = error_sign
+
+
 opening_brackets = ["(", "[", "{", "<"]
 closing_brackets = [")", "]", "}", ">"]
 error_points = [3, 57, 1197, 25137]
@@ -19,10 +27,10 @@ open_to_close_brackets = dict(
 )
 
 
-def find_error(line):
-    current = line[0]
+def find_missing_brackets(line):
     stack = []
-    for bracket in line[1:]:
+    current = None
+    for bracket in line:
         if bracket in opening_brackets:
             if current:
                 stack.append(current)
@@ -34,7 +42,7 @@ def find_error(line):
             else:
                 current = None
         else:
-            return bracket
+            raise MissingBracketException(f"{bracket} was found instead of {open_to_close_brackets[current]}", bracket)
     else:
         stack.append(current)
     return ["".join(stack)]
@@ -45,11 +53,11 @@ def part1():
     mistakes = []
     incomplete = []
     for line in syntax_lines:
-        result = find_error(line)
-        if isinstance(result, str):
-            mistakes.append(result)
-        else:
+        try:
+            result = find_missing_brackets(line)
             incomplete.append("".join(result))
+        except MissingBracketException as exception:
+            mistakes.append(exception.error)
     print(sum([error_scores[bracket] for bracket in mistakes]))
     return incomplete
 
@@ -66,6 +74,4 @@ def part2(brackets: list):
 
 
 if __name__ == "__main__":
-    todo = part1()
-    print(correction_scores)
-    part2(todo)
+    part2(part1())
